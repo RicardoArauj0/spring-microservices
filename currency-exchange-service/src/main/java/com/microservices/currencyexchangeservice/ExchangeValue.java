@@ -3,6 +3,7 @@ package com.microservices.currencyexchangeservice;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 
 @Entity
@@ -19,7 +20,7 @@ public class ExchangeValue {
 
     private BigDecimal conversionMultiple;
 
-    @Column(nullable = true)
+    @Transient
     private int port;
 
     public ExchangeValue() {
