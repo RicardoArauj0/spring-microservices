@@ -1,5 +1,6 @@
 package com.microservices.currencyconversionservice;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,10 +14,14 @@ import java.util.Map;
 @RestController
 public class CurrencyConversionController {
 
+    @Autowired
+    CurrencyExchangeServiceProxy exchangeProxy;
+
     @GetMapping("currency-calculation/from/{from}/to/{to}/quantity/{quantity}")
     public CurrencyConvertionBean getCurrencyConvertion(@PathVariable String from,
                                                         @PathVariable String to,
                                                         @PathVariable BigDecimal quantity) {
+        
         Map<String,String> uriVariables = new HashMap<>();
         uriVariables.put("from", from);
         uriVariables.put("to", to);
@@ -26,7 +31,17 @@ public class CurrencyConversionController {
                 CurrencyConvertionBean.class, uriVariables);
 
         CurrencyConvertionBean response = responseEntity.getBody();
-        System.out.println(response.toString());
+
+        return new CurrencyConvertionBean(response.getId(), from, to, response.getConversionMultiple(),
+                quantity, quantity.multiply(response.getConversionMultiple()), response.getPort() );
+    }
+
+    @GetMapping("currency-calculation-feign/from/{from}/to/{to}/quantity/{quantity}")
+    public CurrencyConvertionBean getCurrencyConvertionFeign(@PathVariable String from,
+                                                        @PathVariable String to,
+                                                        @PathVariable BigDecimal quantity) {
+
+        CurrencyConvertionBean response = exchangeProxy.getExchange(from, to);
 
         return new CurrencyConvertionBean(response.getId(), from, to, response.getConversionMultiple(),
                 quantity, quantity.multiply(response.getConversionMultiple()), response.getPort() );
