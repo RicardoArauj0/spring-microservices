@@ -15,7 +15,7 @@ import java.util.Map;
 public class CurrencyConversionController {
 
     @Autowired
-    CurrencyExchangeServiceProxy exchangeProxy;
+    private CurrencyExchangeServiceProxy exchangeProxy;
 
     @GetMapping("currency-calculation/from/{from}/to/{to}/quantity/{quantity}")
     public CurrencyConvertionBean getCurrencyConvertion(@PathVariable String from,
@@ -38,8 +38,8 @@ public class CurrencyConversionController {
 
     @GetMapping("currency-calculation-feign/from/{from}/to/{to}/quantity/{quantity}")
     public CurrencyConvertionBean getCurrencyConvertionFeign(@PathVariable String from,
-                                                        @PathVariable String to,
-                                                        @PathVariable BigDecimal quantity) {
+                                                             @PathVariable String to,
+                                                             @PathVariable BigDecimal quantity) {
 
         CurrencyConvertionBean response = exchangeProxy.getExchange(from, to);
 
